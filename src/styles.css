@@ -17,6 +17,10 @@ body.sb {
   border-right: var(--sb-bw) solid var(--sb-border);
 }
 
+/* Без этого flex сжимает карточки по высоте, а .sb-card{overflow:hidden}
+   обрезает их содержимое вместо того, чтобы панель прокручивалась. */
+.panel > * { flex: none; }
+
 .panel > .sb-h1 { font-size: 28px; }
 
 .field { display: block; }
@@ -140,7 +144,8 @@ body.sb {
   vertical-align: baseline;
 }
 .swatch--safest { background: var(--sb-accent-4); }
-.swatch--shortest { background: var(--sb-surface-2); }
+/* Совпадает с цветом линии кратчайшего маршрута на карте (--sb-muted). */
+.swatch--shortest { background: var(--sb-muted); }
 
 .disclaimer { margin: auto 0 0; }
 

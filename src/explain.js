@@ -11,11 +11,15 @@ const RULES = [
   { key: 'unknown-light', test: (a) => a.lit === 'unknown', text: 'обходит участок без данных об освещении' },
 ];
 
+// Ребро опознаём по паре узлов, а не по wayId: длинная улица в OSM — один way,
+// и обход её участка иначе не отличить от прохода по ней.
+const edgeKey = (e) => `${Math.min(e.from, e.to)}:${Math.max(e.from, e.to)}`;
+
 export function explain(shortest, safest) {
   if (!shortest || !safest) return { deltaM: 0, reasons: [] };
 
-  const keptWays = new Set(safest.edges.map((e) => e.attrs.wayId));
-  const avoided = shortest.edges.filter((e) => !keptWays.has(e.attrs.wayId));
+  const kept = new Set(safest.edges.map(edgeKey));
+  const avoided = shortest.edges.filter((e) => !kept.has(edgeKey(e)));
   const byReason = new Map();
 
   for (const e of avoided) {

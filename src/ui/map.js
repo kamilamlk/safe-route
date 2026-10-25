@@ -5,10 +5,12 @@ const START_VIEW = [[55.7558, 37.6173], 14];
 const token = (name) =>
   getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
+// interactive: false обязателен — иначе нарисованный маршрут перехватывает
+// клики, и поставить точку или зону поверх линии становится невозможно.
 function routeStyles() {
   return {
-    shortest: { color: token('--sb-muted'), weight: 4, opacity: 0.8, dashArray: '6 6' },
-    safest: { color: token('--sb-accent-4'), weight: 7, opacity: 1 },
+    shortest: { color: token('--sb-muted'), weight: 4, opacity: 0.8, dashArray: '6 6', interactive: false },
+    safest: { color: token('--sb-accent-4'), weight: 7, opacity: 1, interactive: false },
   };
 }
 
@@ -59,6 +61,7 @@ export function createMap(elementId) {
         weight: 2,
         fillColor: zoneColor(zone.mode),
         fillOpacity: 0.35,
+        interactive: false,
       }).addTo(zoneLayer);
     }
   }
