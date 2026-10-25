@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Безопасный маршрут</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;900&family=Manrope:wght@400;500;700&family=Montserrat:wght@700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="src/soft-brutalist.css">
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body class="sb">
+  <aside class="panel sb-rotate">
+    <h1 class="sb-h1">Безопасный<br>маршрут</h1>
+
+    <section class="sb-card">
+      <div class="sb-card__strip"><h2 class="sb-h1">Точки</h2></div>
+      <div class="sb-card__body">
+        <label class="field">
+          <span class="sb-label">Адрес</span>
+          <input id="address" class="sb-input" type="text" placeholder="улица и дом">
+        </label>
+        <div class="btn-row">
+          <button id="find-a" class="sb-btn sb-btn--secondary" type="button">Найти как А</button>
+          <button id="find-b" class="sb-btn sb-btn--secondary" type="button">Найти как Б</button>
+        </div>
+        <p class="sb-small">Или поставь точки кликом по карте.</p>
+        <div class="btn-row">
+          <button id="pick-a" class="sb-btn sb-btn--secondary" type="button">Указать А</button>
+          <button id="pick-b" class="sb-btn sb-btn--secondary" type="button">Указать Б</button>
+        </div>
+        <p class="points">
+          <span id="point-a" class="sb-tag">А: не задана</span>
+          <span id="point-b" class="sb-tag">Б: не задана</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="sb-card">
+      <div class="sb-card__strip"><h2 class="sb-h1">Условия</h2></div>
+      <div class="sb-card__body">
+        <label class="field">
+          <span class="sb-label">Время суток</span>
+          <select id="time-of-day" class="sb-input">
+            <option value="day">День</option>
+            <option value="night">Ночь</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="sb-label">Быстрее ↔ безопаснее: <output id="safety-out">0.6</output></span>
+          <input id="safety" class="slider" type="range" min="0" max="1" step="0.1" value="0.6">
+        </label>
+      </div>
+    </section>
+
+    <section class="sb-card">
+      <div class="sb-card__strip"><h2 class="sb-h1">Опасные зоны</h2></div>
+      <div class="sb-card__body">
+        <div class="btn-row">
+          <button id="zone-avoid" class="sb-btn sb-btn--secondary" type="button" aria-pressed="false">Обходить</button>
+          <button id="zone-forbid" class="sb-btn sb-btn--secondary" type="button" aria-pressed="false">Не ходить</button>
+        </div>
+        <label class="field">
+          <span class="sb-label">Радиус, м</span>
+          <input id="zone-radius" class="sb-input" type="number" min="20" max="2000" step="10" value="150">
+        </label>
+        <ul id="zone-list" class="zones"></ul>
+        <div class="btn-row">
+          <button id="zones-export" class="sb-btn sb-btn--secondary" type="button">Выгрузить</button>
+          <label class="sb-btn sb-btn--secondary file-button">
+            Загрузить<input id="zones-import" type="file" accept="application/json" hidden>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <button id="build" class="sb-btn sb-btn--blue build" type="button">Построить маршрут</button>
+
+    <p id="status" class="sb-small status" role="status"></p>
+
+    <section id="result" class="sb-card" hidden>
+      <div class="sb-card__strip"><h2 class="sb-h1">Результат</h2></div>
+      <div class="sb-card__body" id="result-body"></div>
+    </section>
+
+    <p class="sb-small disclaimer">
+      «Безопасность» здесь — оценка по открытым данным OpenStreetMap. Данные об
+      освещении неполные, криминальная статистика не используется. Инструмент
+      помогает сравнить варианты, но не гарантирует безопасность и не подходит
+      для чрезвычайных ситуаций.
+    </p>
+  </aside>
+
+  <main id="map"></main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

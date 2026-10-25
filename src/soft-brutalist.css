@@ -1,0 +1,283 @@
+/* ============================================================
+   Soft brutalist — the house style for these personal projects.
+
+   Drop this file in, link the two fonts, put `class="sb"` on <body>.
+   Everything below is plain CSS with no build step and no dependencies.
+
+   Fonts (add to <head>):
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;900&family=Manrope:wght@400;500;700&family=Montserrat:wght@700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+   Four families, not two: Archivo and Space Grotesk ship no Cyrillic subset
+   (latin, latin-ext and vietnamese only — checked against the Google Fonts
+   CSS). On a Russian page every glyph silently fell through to the system
+   font, so the type half of this style simply did not apply. Montserrat and
+   Manrope carry the Cyrillic and sit second in each stack: Latin still gets
+   Archivo/Space Grotesk, Cyrillic gets a deliberate match instead of
+   whatever Helvetica the OS happens to have.
+   ============================================================ */
+
+:root {
+  /* --- ground ------------------------------------------------ */
+  --sb-bg:         #FFF8E7;   /* page. warm cream, never pure white */
+  --sb-surface:    #FFFFFF;   /* raised things: cards, inputs, menus */
+  --sb-surface-2:  #F3ECD8;   /* recessed things: tags, code, wells */
+
+  /* --- ink ---------------------------------------------------- */
+  --sb-text:       #000000;
+  --sb-muted:      #4A4A4A;   /* body copy at rest; still AAA on cream */
+  --sb-border:     #000000;   /* ALWAYS black. never a grey, never a tint */
+
+  /* --- accents ------------------------------------------------
+     These rotate across a page for rhythm — they are NOT semantic.
+     Do not attach meaning to a particular hue except via --sb-danger.   */
+  --sb-accent:     #FF5C39;   /* coral — the default / primary action */
+  --sb-accent-2:   #3D5AFE;   /* blue */
+  --sb-accent-3:   #FFC400;   /* yellow  → needs BLACK text */
+  --sb-accent-4:   #00B86B;   /* green */
+  --sb-accent-5:   #FFE0D6;   /* coral tint → needs BLACK text */
+  --sb-danger:     #FF1744;
+
+  /* Foreground on each accent. The rule is: BLACK on everything except blue.
+     These are measured, not eyeballed — white on coral is only 3.07:1 and
+     white on green only 2.60:1, both of which fail WCAG AA for body text.
+     Black gives 6.84:1 and 8.07:1. Blue is the one accent dark enough that
+     white wins (5.13:1 vs 4.09:1). */
+  --sb-on-accent:   #000000;  /* coral  6.84:1 */
+  --sb-on-accent-2: #FFFFFF;  /* blue   5.13:1 */
+  --sb-on-accent-3: #000000;  /* yellow 13.15:1 */
+  --sb-on-accent-4: #000000;  /* green  8.07:1 */
+  --sb-on-accent-5: #000000;  /* tint   16.89:1 */
+  --sb-on-danger:   #000000;  /* red    5.46:1 */
+
+  /* --- geometry ----------------------------------------------- */
+  --sb-bw:     3px;   /* structural borders: cards, buttons, inputs */
+  --sb-bw-sm:  2px;   /* small things: badges, tags, dots */
+  --sb-r-sm:   4px;
+  --sb-r:      6px;
+  --sb-r-lg:   8px;
+
+  /* --- shadows -------------------------------------------------
+     Hard offset only. Zero blur, zero spread, pure black.
+     A blurred shadow is not this style.                            */
+  --sb-shadow-sm: 4px 4px 0 var(--sb-border);
+  --sb-shadow:    5px 5px 0 var(--sb-border);
+  --sb-shadow-lg: 7px 7px 0 var(--sb-border);
+
+  /* --- type ---------------------------------------------------- */
+  /* Second family in each stack carries the Cyrillic — see the header note.
+     Montserrat Black matches Archivo Black's weight and density; Manrope is
+     the closest geometric grotesque to Space Grotesk that has the glyphs. */
+  --sb-font-display: Archivo, Montserrat, 'Helvetica Neue', Arial, sans-serif;
+  --sb-font-body:    'Space Grotesk', Manrope, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* --- space (4px base) ---------------------------------------- */
+  --sb-1: 4px;  --sb-2: 8px;  --sb-3: 12px; --sb-4: 16px;
+  --sb-5: 24px; --sb-6: 32px; --sb-7: 48px; --sb-8: 64px;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+.sb {
+  margin: 0;
+  background: var(--sb-bg);
+  color: var(--sb-text);
+  font-family: var(--sb-font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sb *, .sb *::before, .sb *::after { box-sizing: border-box; }
+
+/* --- type scale ---------------------------------------------- */
+.sb-display {
+  font-family: var(--sb-font-display);
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 76px);
+  line-height: 1.0;
+  letter-spacing: -.03em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.sb-h1 {
+  font-family: var(--sb-font-display);
+  font-weight: 900;
+  font-size: 34px; line-height: 1.1; letter-spacing: -.02em;
+  text-transform: uppercase;
+  margin: 0;
+}
+.sb-h2 {
+  font-family: var(--sb-font-body);
+  font-weight: 700;
+  font-size: 20px; line-height: 1.35; letter-spacing: -.01em;
+  margin: 0;
+}
+.sb-body  { font-size: 16px; line-height: 1.65; color: var(--sb-muted); margin: 0; }
+.sb-small { font-size: 13px; line-height: 1.5;  color: var(--sb-muted); margin: 0; }
+.sb-label {
+  font-family: var(--sb-font-body);
+  font-weight: 700; font-size: 11px; line-height: 1;
+  letter-spacing: .10em; text-transform: uppercase;
+}
+
+/* ============================================================
+   Components
+   ============================================================ */
+
+/* --- button --------------------------------------------------
+   The press interaction is the signature of this style: the element
+   travels into its own shadow rather than dimming or lifting.      */
+.sb-btn {
+  display: inline-flex; align-items: center; gap: var(--sb-2);
+  padding: 14px 24px;
+  font-family: var(--sb-font-body);
+  font-weight: 700; font-size: 14px;
+  letter-spacing: .06em; text-transform: uppercase;
+  color: var(--sb-on-accent);
+  background: var(--sb-accent);
+  border: var(--sb-bw) solid var(--sb-border);
+  border-radius: var(--sb-r);
+  box-shadow: var(--sb-shadow);
+  cursor: pointer;
+  transition: transform .06s ease, box-shadow .06s ease;
+}
+.sb-btn:hover  { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--sb-border); }
+.sb-btn:active { transform: translate(3px, 3px);  box-shadow: 2px 2px 0 var(--sb-border); }
+.sb-btn:focus-visible { outline: var(--sb-bw) solid var(--sb-accent-2); outline-offset: 3px; }
+
+.sb-btn--secondary { background: var(--sb-surface); color: var(--sb-text); }
+.sb-btn--blue      { background: var(--sb-accent-2); color: var(--sb-on-accent-2); }
+/* ghost has no fill, so it must reset the on-accent foreground too */
+.sb-btn--ghost     { background: transparent; color: var(--sb-text); box-shadow: none; }
+.sb-btn--ghost:hover  { background: var(--sb-surface); transform: none; box-shadow: none; }
+.sb-btn--ghost:active { transform: translate(1px, 1px); box-shadow: none; }
+
+/* --- card -----------------------------------------------------
+   Optional coloured header strip: set --sb-card-accent on the card.  */
+.sb-card {
+  background: var(--sb-surface);
+  border: var(--sb-bw) solid var(--sb-border);
+  border-radius: var(--sb-r-lg);
+  box-shadow: var(--sb-shadow-lg);
+  overflow: hidden;
+}
+.sb-card__strip {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sb-3);
+  padding: 12px 20px;
+  background: var(--sb-card-accent, var(--sb-accent));
+  color: var(--sb-card-accent-fg, var(--sb-on-accent));
+  border-bottom: var(--sb-bw) solid var(--sb-border);
+}
+.sb-card__strip .sb-h1 { font-size: 20px; color: inherit; }
+.sb-card__body { display: flex; flex-direction: column; gap: var(--sb-4); padding: 22px 20px; }
+
+/* --- badge ---------------------------------------------------- */
+.sb-badge {
+  display: inline-block;
+  padding: 4px 9px;
+  font-weight: 700; font-size: 10px; line-height: 1.4;
+  letter-spacing: .08em; text-transform: uppercase;
+  background: var(--sb-surface);
+  color: var(--sb-text);
+  border: var(--sb-bw-sm) solid var(--sb-border);
+  border-radius: var(--sb-r-sm);
+}
+.sb-badge--on { background: var(--sb-accent-4); color: var(--sb-on-accent-4); }
+
+/* --- tag (recessed, no shadow — it is not a raised surface) ---- */
+.sb-tag {
+  display: inline-block;
+  padding: 5px 10px;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--sb-muted);
+  background: var(--sb-surface-2);
+  border: var(--sb-bw-sm) solid var(--sb-border);
+  border-radius: var(--sb-r-sm);
+}
+
+/* --- input / select ------------------------------------------- */
+.sb-input {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sb-3);
+  width: 100%;
+  padding: 13px 16px;
+  font-family: var(--sb-font-body); font-size: 14px;
+  color: var(--sb-text);
+  background: var(--sb-surface);
+  border: var(--sb-bw) solid var(--sb-border);
+  border-radius: var(--sb-r);
+}
+.sb-input::placeholder { color: var(--sb-muted); opacity: 1; }
+.sb-input:focus { outline: none; box-shadow: var(--sb-shadow-sm); }
+
+/* --- list row -------------------------------------------------- */
+.sb-row {
+  display: flex; align-items: center; gap: var(--sb-4);
+  padding: 14px 16px;
+  background: var(--sb-surface);
+  border: var(--sb-bw) solid var(--sb-border);
+  border-radius: var(--sb-r);
+  box-shadow: var(--sb-shadow-sm);
+}
+.sb-row__dot {
+  flex: none; width: 14px; height: 14px;
+  background: var(--sb-row-accent, var(--sb-accent));
+  border: var(--sb-bw-sm) solid var(--sb-border);
+  border-radius: 3px;
+}
+.sb-row__name { flex: 1; font-weight: 700; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; }
+.sb-row__meta { font-size: 11px; letter-spacing: .04em; color: var(--sb-muted); }
+
+/* --- nav ------------------------------------------------------- */
+.sb-topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sb-4);
+  padding: 24px var(--sb-8);
+  background: var(--sb-surface);
+  border-bottom: var(--sb-bw) solid var(--sb-border);
+}
+.sb-brand {
+  font-family: var(--sb-font-display);
+  font-weight: 900; font-size: 16px; letter-spacing: -.01em;
+  text-transform: uppercase;
+}
+.sb-nav { display: flex; gap: var(--sb-3); }
+.sb-nav a {
+  padding: 7px 13px;
+  font-weight: 700; font-size: 11px;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--sb-text);
+  text-decoration: none;
+  background: var(--sb-bg);
+  border: var(--sb-bw-sm) solid var(--sb-border);
+  border-radius: var(--sb-r-sm);
+}
+.sb-nav a[aria-current] { background: var(--sb-accent); color: var(--sb-on-accent); }
+
+/* --- footer ----------------------------------------------------- */
+.sb-footer {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sb-4);
+  padding: 32px var(--sb-8);
+  background: var(--sb-text);
+  color: var(--sb-bg);
+  font-weight: 700; font-size: 13px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* --- accent rotation helper -------------------------------------
+   Put .sb-rotate on a grid/list and its children cycle through the
+   accents automatically, so you never hand-assign hues.             */
+.sb-rotate > *:nth-child(5n+1) { --sb-card-accent: var(--sb-accent);   --sb-card-accent-fg: var(--sb-on-accent);   --sb-row-accent: var(--sb-accent); }
+.sb-rotate > *:nth-child(5n+2) { --sb-card-accent: var(--sb-accent-2); --sb-card-accent-fg: var(--sb-on-accent-2); --sb-row-accent: var(--sb-accent-2); }
+.sb-rotate > *:nth-child(5n+3) { --sb-card-accent: var(--sb-accent-3); --sb-card-accent-fg: var(--sb-on-accent-3); --sb-row-accent: var(--sb-accent-3); }
+.sb-rotate > *:nth-child(5n+4) { --sb-card-accent: var(--sb-accent-4); --sb-card-accent-fg: var(--sb-on-accent-4); --sb-row-accent: var(--sb-accent-4); }
+.sb-rotate > *:nth-child(5n+5) { --sb-card-accent: var(--sb-accent-5); --sb-card-accent-fg: var(--sb-on-accent-5); --sb-row-accent: var(--sb-accent-5); }
+
+/* --- motion ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .sb-btn { transition: none; }
+  .sb-btn:hover, .sb-btn:active { transform: none; }
+}
