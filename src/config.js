@@ -48,7 +48,11 @@ export const OVERPASS = {
     'https://overpass-api.de/api/interpreter',
     'https://overpass.kumi.systems/api/interpreter',
   ],
+  // Лимит счёта на стороне Overpass.
   timeoutS: 30,
+  // Клиентский таймаут: реальный запрос на район ~1,5 км измеренно занимает
+  // около 45 с вместе с очередью, поэтому 30 с обрывали бы живые запросы.
+  clientTimeoutS: 90,
   cacheTtlMs: 7 * 24 * 3600 * 1000,
   cachePrefix: 'safe-route:osm:',
 };

@@ -50,24 +50,46 @@ function writeCache(storage, key, elements) {
 export async function fetchOsm(bbox, options = {}) {
   const storage = options.storage ?? globalThis.localStorage;
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
+  const timeoutMs = options.timeoutMs ?? OVERPASS.clientTimeoutS * 1000;
   const key = cacheKey(bbox);
 
   const cached = readCache(storage, key);
   if (cached) return cached;
 
   let lastError = null;
+  let rateLimited = false;
+
   for (const url of OVERPASS.endpoints) {
+    // Без таймаута зависший сервер держит пользователя минутами: резервный
+    // endpoint в проде отвечает далеко не всегда.
+    const abort = new AbortController();
+    const timer = setTimeout(() => abort.abort(), timeoutMs);
     try {
-      const res = await fetchImpl(url, { method: 'POST', body: buildQuery(bbox) });
+      const res = await fetchImpl(url, {
+        method: 'POST',
+        body: buildQuery(bbox),
+        signal: abort.signal,
+      });
+      if (res.status === 429 || res.status === 504) {
+        rateLimited = true;
+        throw new Error(`сервер перегружен (HTTP ${res.status})`);
+      }
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const { elements = [] } = await res.json();
       writeCache(storage, key, elements);
       return elements;
     } catch (err) {
-      lastError = err;
+      lastError = err?.name === 'AbortError'
+        ? new Error(`сервер не ответил за ${Math.round(timeoutMs / 1000)} с`)
+        : err;
+    } finally {
+      clearTimeout(timer);
     }
   }
+
   throw new Error(
-    `Не удалось получить данные OpenStreetMap: ${lastError?.message || 'нет ответа'}. Попробуй ещё раз через минуту.`,
+    rateLimited
+      ? 'Публичный сервер OpenStreetMap сейчас ограничивает запросы. Подожди минуту и нажми «Построить маршрут» ещё раз — уже загруженные районы берутся из кэша.'
+      : `Не удалось получить данные OpenStreetMap: ${lastError?.message || 'нет ответа'}. Попробуй ещё раз через минуту.`,
   );
 }

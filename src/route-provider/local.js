@@ -53,7 +53,7 @@ export function createLocalProvider({ fetchOsm = defaultFetchOsm, onProgress = (
         );
       }
 
-      onProgress('Загружаю карту района…');
+      onProgress('Загружаю карту района… первый раз это занимает до минуты.');
       const elements = await fetchOsm(bbox);
 
       onProgress('Строю граф улиц…');

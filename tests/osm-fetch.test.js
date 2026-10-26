@@ -65,6 +65,35 @@ test('если все endpoint-ы упали, бросается понятна�
   );
 });
 
+test('при 429 сообщение объясняет лимит, а не говорит «нет ответа»', async () => {
+  const storage = fakeStorage();
+  const fetchImpl = async () => ({ ok: false, status: 429, json: async () => ({}) });
+  await assert.rejects(
+    () => fetchOsm(BBOX, { storage, fetchImpl }),
+    /ограничивает запросы/,
+  );
+});
+
+test('зависший сервер прерывается по таймауту, а не держит вечно', async () => {
+  const storage = fakeStorage();
+  const seen = [];
+  // Первый endpoint «висит», пока его не оборвут сигналом.
+  const fetchImpl = (url, opts) => {
+    seen.push(url);
+    if (seen.length === 1) {
+      return new Promise((_, reject) => {
+        opts.signal.addEventListener('abort', () =>
+          reject(Object.assign(new Error('aborted'), { name: 'AbortError' })));
+      });
+    }
+    return Promise.resolve(ok([{ type: 'node', id: 3 }]));
+  };
+
+  const elements = await fetchOsm(BBOX, { storage, fetchImpl, timeoutMs: 50 });
+  assert.equal(elements[0].id, 3);
+  assert.equal(seen.length, 2);
+});
+
 test('просроченный кэш игнорируется', async () => {
   const storage = fakeStorage();
   storage.setItem(cacheKey(BBOX), JSON.stringify({ at: 0, elements: [{ type: 'node', id: 7 }] }));
